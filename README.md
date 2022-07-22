@@ -1,3 +1,5 @@
+We are planning to release all training and evaluation code for Ped2, Avenue and STC datasets with a detailed instruction to reproduce our results in paper in few days.
+
 # Jigsaw-VAD
 Official pytorch implementation for the paper entitled "Video Anomaly Detection by Solving Decoupled Spatio-Temporal Jigsaw Puzzles" (ECCV 2022)
 
