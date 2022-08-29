@@ -134,7 +134,7 @@ class VideoAnomalyDataset_C3D(Dataset):
 
         clip_id = str(record["frame"]) + '_' + str(record["object"])
 
-        # we do not permute the static clips which will be ignored afterwards.
+        # NOT permute clips containing static contents
         if (obj[:, -1, :, :] - obj[:, 0, :, :]).abs().max() < self.static_threshold:
             perm = np.arange(self.frame_num)
 

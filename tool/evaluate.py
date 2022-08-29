@@ -13,13 +13,6 @@ from sklearn import metrics
 import math
 import json
 DATA_DIR='/irip/wangguodong_2020/projects/datasets/vad/'
-'''if not os.path.exists(DATA_DIR):
-    DATA_DIR='/data0/jiachang/'
-    if not os.path.exists(DATA_DIR):
-        DATA_DIR='/home/manning/'
-    if not os.path.exists(DATA_DIR):
-        DATA_DIR='../anotations/'
-'''
 
 # normalize scores in each sub video
 NORMALIZE = True
@@ -37,25 +30,6 @@ def parser_args():
                         help='the type of evaluation, choosing type is: plot_roc, compute_auc, '
                              'test_func\n, the default type is compute_auc')
     return parser.parse_args()
-
-
-
-# def score_smoothing(score,sigma=30):
-#     # r = score.shape[0] //39
-#     # if r%2==0:
-#     #     r+=1
-#     r = 125
-#     if r > score.shape[0] // 2:
-#         r = score.shape[0] // 2 - 1
-#     if r % 2 == 0:
-#         r += 1
-#     gaussian_temp=np.ones(r*2-1)
-#     for i in range(r*2-1):
-#         gaussian_temp[i]=np.exp(-(i-r)**2/(2*sigma**2))/(sigma*np.sqrt(2*np.pi))
-#     new_score=score
-#     for i in range(r,score.shape[0]-r):
-#         new_score[i]=np.dot(score[i-r:i+r-1],gaussian_temp)
-#     return new_score
 
 
 def score_smoothing(score, ws=25, function='mean', sigma=10):
@@ -117,14 +91,6 @@ class GroundTruthLoader(object):
         ENTRANCE: os.path.join(DATA_DIR, 'enter/enter.mat'),
         EXIT: os.path.join(DATA_DIR, 'exit/exit.mat')
     }
-
-    # NAME_FRAMES_MAPPING = {
-    #     AVENUE: os.path.join(DATA_DIR, 'avenue/testing/frames'),
-    #     PED1: os.path.join(DATA_DIR, 'ped1/testing/frames'),
-    #     PED2: os.path.join(DATA_DIR, 'ped2/testing/frames'),
-    #     ENTRANCE: os.path.join(DATA_DIR, 'enter/testing/frames'),
-    #     EXIT: os.path.join(DATA_DIR, 'exit/testing/frames')
-    # }
 
     NAME_FRAMES_MAPPING = {
         AVENUE: os.path.join(DATA_DIR, 'avenue/testing'),
@@ -232,7 +198,6 @@ class GroundTruthLoader(object):
 
         # get the total frames of sub video
         def get_video_length(sub_video_number):
-            # video_name = video_name_template.format(sub_video_number)
             video_name = os.path.join(dataset_video_folder, video_list[sub_video_number])
             assert os.path.isdir(video_name), '{} is not directory!'.format(video_name)
 
@@ -244,8 +209,6 @@ class GroundTruthLoader(object):
         gt = []
         for i in range(num_video):
             length = get_video_length(i)
-
-            # sub_video_gt = np.zeros((length,), dtype=np.int8)
             
             mat_path = os.path.join(root, str(int(video_list[i])) + '_label.mat')
             sub_video_gt = np.stack(scio.loadmat(mat_path)['volLabel'][0]).max((1, 2))
@@ -262,7 +225,6 @@ class GroundTruthLoader(object):
 
         gt = []
         for video in video_path_list:
-            # print(os.path.join(GroundTruthLoader.SHANGHAITECH_LABEL_PATH, video))
             gt.append(np.load(os.path.join(GroundTruthLoader.SHANGHAITECH_LABEL_PATH, video)))
 
         return gt
@@ -685,29 +647,11 @@ def evaluate(eval_type, save_file):
     return optimal_results
 
 def evaluate_all(res,reverse=True,smoothing=True):
-    # print("compute auc:")
-    result=compute_auc(res,reverse,smoothing)
-    # print("average_psnr:")
-    # average_psnr(path,reverse)
-    # print("calculate_score:")
-    # calculate_score(path,reverse,smoothing)
-    # print("compute_eer:")
-    # compute_eer(path,reverse,smoothing)
-    # print("precision_recall_auc:")
-    # precision_recall_auc(path,reverse,smoothing)
-    # print("compute_auc_average:")
+    result = compute_auc(res,reverse,smoothing)
     aver_result = compute_auc_average(res,reverse,smoothing)
     return result, aver_result
 
 if __name__ == '__main__':
-    # compute_auc_average('/home/manning/autor_results/Ionescu_et_al_CVPR_2019_Avenue_results.pkl',reverse=True,smoothing=False)
-    #print('\n')
-    #compute_auc_average('/home/manning/autor_results/Ionescu_et_al_CVPR_2019_ShanghaiTech_results.pkl')
-    # compute_auc_average('/home/manning/anomaly_scores/shanghaitech_frame_l2_diff.pkl',reverse=True,smoothing=False)
     pickle_path = './test.pkl'
-    result = evaluate_all( pickle_path, reverse=True, smoothing=True)
+    result = evaluate_all(pickle_path, reverse=True, smoothing=True)
     print(result)
-    # gt_loader = GroundTruthLoader()
-    # gt = gt_loader(dataset='shanghaitech')
-    # print('gt[51]',gt[51])
-    # print('gt[17]',gt[17])

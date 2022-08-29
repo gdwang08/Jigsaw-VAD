@@ -8,11 +8,11 @@ Official pytorch implementation for the paper entitled "Video Anomaly Detection 
 Train a model:
 
 ```
-python main.py --dataset shanghaitech --val_step 100 --print_interval 20 --batch_size 192 --sample_num 9 --epochs 100
+python main.py --dataset shanghaitech --val_step 100 --print_interval 20 --batch_size 192 --sample_num 9 --epochs 100 --static_threshold 0.2
 ```
 
 
 # Testing
 ```
-python main-py --dataset shanghaitech --sample_num 9 --checkpoint xxx.pth
+python main.py --dataset shanghaitech --sample_num 9 --checkpoint xxx.pth
 ```

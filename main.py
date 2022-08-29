@@ -3,16 +3,13 @@ import argparse
 import torch
 import time
 import pickle
-import itertools
 import numpy as np
 
 from torch import nn
-# torch.backends.cudnn.enabled = False
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from torch.optim import lr_scheduler
 
 from dataset import VideoAnomalyDataset_C3D
 from models import model
@@ -24,16 +21,16 @@ torch.backends.cudnn.benchmark = False
 
 # Config
 def get_configs():
-    parser = argparse.ArgumentParser(description="faiss config")
-    parser.add_argument("--val_step", type=int, default=500000)
+    parser = argparse.ArgumentParser(description="VAD-Jigsaw config")
+    parser.add_argument("--val_step", type=int, default=500)
     parser.add_argument("--print_interval", type=int, default=100)
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--gpu_id", type=str, default=0)
     parser.add_argument("--log_date", type=str, default=None)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--static_threshold", type=float, default=0.3)
     parser.add_argument("--sample_num", type=int, default=5)
-    parser.add_argument("--filter_ratio", type=float, default=0.9)
+    parser.add_argument("--filter_ratio", type=float, default=0.8)
     parser.add_argument("--checkpoint", type=str, default=None)
     parser.add_argument("--dataset", type=str, default="shanghaitech", choices=['shanghaitech', 'ped2', 'avenue'])
     args = parser.parse_args()
@@ -82,7 +79,6 @@ def train(args):
 
     criterion = nn.CrossEntropyLoss(reduction='mean')
     optimizer = optim.Adam(params=net.parameters(), lr=1e-4)
-    lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, args.epochs, eta_min=1e-8, last_epoch=-1)
 
     # Train
     log_dir = './log/{}/'.format(running_date)
@@ -141,8 +137,6 @@ def train(args):
                 print('cur max: ' + str(max_acc) + ' in ' + timestamp_in_max)
                 net = net.train()
             
-        lr_scheduler.step()
-
 
 def val(args, net=None):
     if not args.log_date:

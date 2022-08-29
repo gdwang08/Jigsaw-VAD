@@ -145,8 +145,6 @@ def remake_video_3d_output(video_output, dataset='ped2', frame_num=7):
         local_min2_ = 1
         for fno in frame_l:
             object_record = frame_record[fno]
-            # object_record = [fr[:2] for fr in frame_record[fno]]
-
             for score_, score2_ in object_record:
                 loc_V3 = object_list[cnt]['loc']
                 loc_V3 = (np.round(loc_V3 / block_scale)).astype(np.int32)
@@ -233,7 +231,6 @@ def remake_video_output(video_output, dataset='ped2'):
         local_max2_ = 0
         for fno in frame_l:
             object_record = frame_record[fno]
-            # object_record = [fr[:2] for fr in frame_record[fno]]
             object_record = np.array(object_record)
             video_[fno], video2_[fno] = object_record.min(0)
 
@@ -250,52 +247,13 @@ def remake_video_output(video_output, dataset='ped2'):
         local_max2_ = max(video2_[non_ones])
         video2_[non_ones] = (video2_[non_ones] - min(video2_)) / (local_max2_ - min(video2_))
             
-        '''
-        ws = 3
-        half_ws = ws // 2
-        temp = video_.copy()
-        for i in range(half_ws, len(video_) - half_ws):
-            video_[i] = min(temp[i - half_ws: i + half_ws])
-        temp = video2_.copy()
-        for i in range(half_ws, len(video2_) - 1):
-            video2_[i] = min(temp[i - half_ws: i + half_ws])
-        '''
         video_ = score_smoothing(video_)
         video2_ = score_smoothing(video2_)
-
-        # if video == '09_0057':
-        # import matplotlib.pyplot as plt
-        # gt_root = '/home/wangguodong_2020/datasets/vad/shanghaitech/frame_masks'
-        # gt_path = os.path.join(gt_root, video + '.npy')
-        # gt = np.load(gt_path)
-        # plt.title(video + ': '+ str(gt.nonzero()[0][0]) + '_' + str(gt.nonzero()[0][-1]))
-        # plt.plot(video_, label='translation')
-        # plt.plot(video2_, label='temporal jigsaw')
-        # plt.legend()
-        # plt.show()
-
-        # if video not in ['08', '09', '10', '11']:
-        # import pdb; pdb.set_trace()
-
-        # video_ = (video2_ + video_) / 2.0
-        # video_ = 0.3 * video2_ + 0.7 * video_
-        # video_ -= video_.min()
-        # video_ /= video_.max()
-        
-        # video_: spatial
-        # video2_: temporal
-        # return_output.append(video2_)
-
 
         return_output_spatial.append(video_)
         return_output_temporal.append(video2_)
 
         combined_video = (video2_ + video_) / 2.0
-       
-
-        # combined_video -= combined_video.min()
-        # combined_video /= combined_video.max()
-
         return_output_complete.append(combined_video)
 
     return return_output_spatial, return_output_temporal, return_output_complete
@@ -303,8 +261,6 @@ def remake_video_output(video_output, dataset='ped2'):
 
 def evaluate_auc(video_output, dataset='shanghaitech'):
     result_dict = {'dataset': dataset, 'psnr': video_output}
-    # results, aver_result = evaluate.evaluate_all(result_dict, reverse=False, smoothing=False)
-    # print("at last......(smoothing: False):\n\tresult: {}\n\taver_result: {}\n".format(results, aver_result))
     smoothed_results, aver_smoothed_result = evaluate.evaluate_all(result_dict, reverse=True, smoothing=True)
     print("(smoothing: True): {}  aver_result: {}".format(smoothed_results, aver_smoothed_result))
     return smoothed_results, aver_smoothed_result
