@@ -6,6 +6,19 @@ Official pytorch implementation for the paper entitled "Video Anomaly Detection 
 ![plot](./figs/arch.png)
 
 
+# Data Preparation
+Please make sure that you have sufficient storage.
+```
+python gen_patches.py --dataset shanghaitech --phase test --filter_ratio 0.8 --sample_num 9
+```
+
+| Dataset       | # Patch (train) |  # Patch (test) |  filter ratio  |  sample num  |  storage  |
+| --------------|-----------------|-----------------|----------------|--------------|-----------|
+| Shanghaitech  |      145766     |      130361     |       0.8      |       9      |    119G   |
+| Avenue        |       96000     |       79988     |       0.8      |       7      |     58G   |
+| Ped2          |       27660     |       31925     |       0.5      |       7      |     20G   |
+
+
 # Training
 Train a model:
 
