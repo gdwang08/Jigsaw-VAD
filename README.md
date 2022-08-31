@@ -1,5 +1,3 @@
-We are planning to release all training and evaluation code for Ped2, Avenue and STC datasets with a detailed instruction to reproduce our results in paper in few days.
-
 # Jigsaw-VAD
 Official pytorch implementation for the paper entitled "Video Anomaly Detection by Solving Decoupled Spatio-Temporal Jigsaw Puzzles" (ECCV 2022)
 
@@ -12,11 +10,11 @@ Please make sure that you have sufficient storage.
 python gen_patches.py --dataset shanghaitech --phase test --filter_ratio 0.8 --sample_num 9
 ```
 
-| Dataset       | # Patch (train) |  # Patch (test) |  filter ratio  |  sample num  |  storage  |
-| --------------|-----------------|-----------------|----------------|--------------|-----------|
-| Shanghaitech  |      145766     |      130361     |       0.8      |       9      |    119G   |
-| Avenue        |       96000     |       79988     |       0.8      |       7      |     58G   |
-| Ped2          |       27660     |       31925     |       0.5      |       7      |     20G   |
+|    Dataset    | # Patch (train) |  # Patch (test) |  filter ratio  |  sample num  |  storage  |
+|:-------------:|:---------------:|:---------------:|:--------------:|:------------:|:---------:|
+|      Ped2     |       27660     |       31925     |       0.5      |       7      |     20G   |
+|     Avenue    |       96000     |       79988     |       0.8      |       7      |     58G   |
+|  Shanghaitech |      145766     |      130361     |       0.8      |       9      |    119G   |
 
 
 # Training
