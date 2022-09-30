@@ -1,5 +1,5 @@
 # Jigsaw-VAD
-Official pytorch implementation for the paper entitled "Video Anomaly Detection by Solving Decoupled Spatio-Temporal Jigsaw Puzzles" (ECCV 2022) [arxiv](https://arxiv.org/abs/2207.10172)
+Official pytorch implementation for the paper entitled "[Video Anomaly Detection by Solving Decoupled Spatio-Temporal Jigsaw Puzzles](https://arxiv.org/abs/2207.10172)" (ECCV 2022)
 
 ![plot](./figs/arch.png)
 
@@ -27,7 +27,7 @@ python main.py --dataset shanghaitech --val_step 100 --print_interval 20 --batch
 ```
 python main.py --dataset shanghaitech --sample_num 9 --checkpoint xxx.pth
 ```
-We provide the pre-trained weights [download](https://drive.google.com/file/d/1-ZjTHnadKwb6vagrIE0SUHGalLu0gmfs/view?usp=sharing) for the STC dataset. 
+We provide the [pre-trained weights](https://drive.google.com/file/d/1-ZjTHnadKwb6vagrIE0SUHGalLu0gmfs/view?usp=sharing) for the STC dataset. 
 
 
 
