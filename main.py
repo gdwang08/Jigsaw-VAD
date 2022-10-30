@@ -64,7 +64,7 @@ def train(args):
                                           static_threshold=args.static_threshold)
 
     vad_dataloader = DataLoader(vad_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    net = model.WideBranchNet(time_length=args.sample_num, num_classes=[81, 81])
+    net = model.WideBranchNet(time_length=args.sample_num, num_classes=[args.sample_num ** 2, 81])
 
     if args.checkpoint is not None:
         state = torch.load(args.checkpoint)
