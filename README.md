@@ -34,7 +34,7 @@ python main.py --dataset shanghaitech --val_step 100 --print_interval 20 --batch
 
 # Testing
 ```
-python main.py --dataset shanghaitech --sample_num 9 --checkpoint xxx.pth
+python main.py --dataset shanghaitech/avenue/ped --sample_num 9/7/7 --checkpoint xxx.pth
 ```
 We provide the pre-trained weights for [STC](https://drive.google.com/file/d/1-ZjTHnadKwb6vagrIE0SUHGalLu0gmfs/view?usp=sharing), [Avenue](https://drive.google.com/file/d/17qUCgzmFt6DwE1M78GcrxtYkM1K0zser/view?usp=share_link) and [Ped2](https://drive.google.com/file/d/16qHhS8-srFcQTgo6M1266GAfVrW-RP3e/view?usp=share_link).
 
