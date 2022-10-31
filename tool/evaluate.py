@@ -127,8 +127,10 @@ class GroundTruthLoader(object):
             gt = self.__load_shanghaitech_gt()
         elif dataset == GroundTruthLoader.TOY_DATA:
             gt = self.__load_toydata_gt()
-        else:
-            gt = self.__load_ucsd_avenue_subway_gt(dataset)
+        elif dataset == GroundTruthLoader.PED2:
+            gt = self.__load_ucsd_gt(dataset)
+        elif dataset == GroundTruthLoader.AVENUE:
+            gt = self.__load_avenue_gt(dataset)
         return gt
 
     # def __load_ucsd_avenue_subway_gt(self, dataset):
@@ -182,8 +184,58 @@ class GroundTruthLoader(object):
 
     #     return gt
     
+    def __load_ucsd_gt(self, dataset):
+        assert dataset in self.mapping, 'there is no dataset named {} \n Please check {}' \
+            .format(dataset, GroundTruthLoader.NAME_MAT_MAPPING.keys())
 
-    def __load_ucsd_avenue_subway_gt(self, dataset):
+        mat_file = self.mapping[dataset]
+        abnormal_events = scio.loadmat(mat_file, squeeze_me=True)['gt']
+
+        if abnormal_events.ndim == 2:
+            abnormal_events = abnormal_events.reshape(-1, abnormal_events.shape[0], abnormal_events.shape[1])
+
+        num_video = abnormal_events.shape[0]
+        dataset_video_folder = GroundTruthLoader.NAME_FRAMES_MAPPING[dataset]
+        video_list = os.listdir(dataset_video_folder)
+        video_list.sort()
+
+        assert num_video == len(video_list), 'ground true does not match the number of testing videos. {} != {}' \
+            .format(num_video, len(video_list))
+
+        # get the total frames of sub video
+        def get_video_length(sub_video_number):
+            # video_name = video_name_template.format(sub_video_number)
+            video_name = os.path.join(dataset_video_folder, video_list[sub_video_number])
+            assert os.path.isdir(video_name), '{} is not directory!'.format(video_name)
+
+            length = len(os.listdir(video_name))
+
+            return length
+
+        # need to test [].append, or np.array().append(), which one is faster
+        gt = []
+        for i in range(num_video):
+            length = get_video_length(i)
+
+            sub_video_gt = np.zeros((length,), dtype=np.int8)
+            sub_abnormal_events = abnormal_events[i]
+            if sub_abnormal_events.ndim == 1:
+                sub_abnormal_events = sub_abnormal_events.reshape((sub_abnormal_events.shape[0], -1))
+
+            _, num_abnormal = sub_abnormal_events.shape
+
+            for j in range(num_abnormal):
+                # (start - 1, end - 1)
+                start = sub_abnormal_events[0, j] - 1
+                end = sub_abnormal_events[1, j]
+
+                sub_video_gt[start: end] = 1
+
+            gt.append(sub_video_gt)
+
+        return gt
+
+    def __load_avenue_gt(self, dataset):
         root = '/irip/wangguodong_2020/projects/datasets/vad/avenue/ground_truth_demo/testing_label_mask'
         assert dataset in self.mapping, 'there is no dataset named {} \n Please check {}' \
             .format(dataset, GroundTruthLoader.NAME_MAT_MAPPING.keys())
@@ -198,6 +250,7 @@ class GroundTruthLoader(object):
 
         # get the total frames of sub video
         def get_video_length(sub_video_number):
+            # video_name = video_name_template.format(sub_video_number)
             video_name = os.path.join(dataset_video_folder, video_list[sub_video_number])
             assert os.path.isdir(video_name), '{} is not directory!'.format(video_name)
 
@@ -209,13 +262,16 @@ class GroundTruthLoader(object):
         gt = []
         for i in range(num_video):
             length = get_video_length(i)
-            
+
+            # sub_video_gt = np.zeros((length,), dtype=np.int8)
+
             mat_path = os.path.join(root, str(int(video_list[i])) + '_label.mat')
             sub_video_gt = np.stack(scio.loadmat(mat_path)['volLabel'][0]).max((1, 2))
 
             gt.append(sub_video_gt)
 
         return gt
+
 
     @staticmethod
     def __load_shanghaitech_gt():
